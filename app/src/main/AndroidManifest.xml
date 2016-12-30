@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
      
-
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
@@ -25,6 +24,7 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="b68e17fe7e460a9178a6c8c0b4d27600" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +32,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.amap.api.location.APSService"></service>
+
+        <service android:name="com.amap.api.location.APSService" />
+
+        <activity android:name=".basic.BasicMap2DActivity" />
+        <activity android:name=".location.LocationMarkerActivity" />
+        <activity android:name=".location.LocationBasicActivity"></activity>
     </application>
 
 </manifest>

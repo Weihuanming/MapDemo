@@ -1,124 +1,80 @@
 package test.mapdemo;
 
-import android.graphics.BitmapFactory;
-import android.media.Rating;
-import android.os.PersistableBundle;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.RatingBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.model.BitmapDescriptor;
-import com.amap.api.maps2d.model.BitmapDescriptorFactory;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.MarkerOptions;
+import test.mapdemo.basic.BasicMap2DActivity;
+import test.mapdemo.location.LocationMarkerActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MapView mapView;
-    private AMap aMap;
+    private RecyclerView list;
 
-    public AMapLocationClient mLocationClient;
-    public AMapLocationClientOption mLocationClientOption;
-    private double lat;
-    private double lon;
-
-    public AMapLocationListener mLocationListener = new AMapLocationListener() {
-        @Override
-        public void onLocationChanged(AMapLocation aMapLocation) {
-            if (aMapLocation != null) {
-                if (aMapLocation.getErrorCode() == 0) {
-                    lat = aMapLocation.getLatitude();
-                    lon = aMapLocation.getLongitude();
-
-                    Log.d("pcw","lat: " + lat +", lon: " + lon);
-                    aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 19));
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(new LatLng(lat, lon));
-                    markerOptions.title("当前位置");
-                    markerOptions.visible(true);
-                    BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_other_highlight));
-                    markerOptions.icon(bitmapDescriptor);
-                    aMap.addMarker(markerOptions);
-                }
-            } else {
-                Log.e("AmapError", "location Error, ErrCode:"
-                        + aMapLocation.getErrorCode() + ", errInfo:"
-                        + aMapLocation.getErrorInfo());
-            }
-        }
+    private Items[] items = {
+        new Items("基本2D地图", BasicMap2DActivity.class),
+        new Items("基本定位", LocationMarkerActivity.class)
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mapView = (MapView) findViewById(R.id.map);
-        mapView.onCreate(savedInstanceState);
-
-        mLocationClient = new AMapLocationClient(getApplicationContext());
-
-        mLocationClient.setLocationListener(mLocationListener);
-
-        init();
+        list = (RecyclerView) findViewById(R.id.list);
+        ListAdapter adapter = new ListAdapter();
+        list.setLayoutManager(new LinearLayoutManager(this));
+        list.setAdapter(adapter);
     }
 
-    private void init() {
-        if (aMap == null) {
-            aMap = mapView.getMap();
+    private class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
+        @Override
+        public ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ListViewHolder(getLayoutInflater().inflate(R.layout.view_list_item, parent, false));
         }
-        setUpMap();
+
+        @Override
+        public void onBindViewHolder(ListViewHolder holder, int position) {
+            holder.title.setText(items[position].title);
+        }
+
+        @Override
+        public int getItemCount() {
+            return items.length;
+        }
     }
 
-    private void setUpMap() {
-        mLocationClientOption = new AMapLocationClientOption();
-        mLocationClientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        mLocationClientOption.setNeedAddress(true);
-        mLocationClientOption.setOnceLocation(true);
-        mLocationClientOption.setWifiScan(true);
-        mLocationClientOption.setMockEnable(false);
-        mLocationClientOption.setInterval(2000);
-        mLocationClient.setLocationOption(mLocationClientOption);
-        mLocationClient.startLocation();
+    private class ListViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView title;
+
+        public ListViewHolder(View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.title);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClick(items[getLayoutPosition()]);
+                }
+            });
+        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
+    private class Items {
+        private String title;
+        private Class<? extends android.app.Activity> activityClass;
+
+        private Items(String title, Class<? extends android.app.Activity> activityClass) {
+            this.title = title;
+            this.activityClass = activityClass;
+        }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mLocationClient.stopLocation();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-        mLocationClient.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-        mLocationClient.onDestroy();
+    private void onItemClick(Items items) {
+        startActivity(new Intent(this, items.activityClass));
     }
 }
