@@ -1,7 +1,9 @@
 package test.mapdemo;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import test.mapdemo.basic.BasicMap2DActivity;
-import test.mapdemo.location.LocationMarkerActivity;
+import test.mapdemo.location.LocationSourceActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,13 +20,18 @@ public class MainActivity extends AppCompatActivity {
 
     private Items[] items = {
         new Items("基本2D地图", BasicMap2DActivity.class),
-        new Items("基本定位", LocationMarkerActivity.class)
+        new Items("基本定位", LocationSourceActivity.class)
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, 0x11);
+
         list = (RecyclerView) findViewById(R.id.list);
         ListAdapter adapter = new ListAdapter();
         list.setLayoutManager(new LinearLayoutManager(this));

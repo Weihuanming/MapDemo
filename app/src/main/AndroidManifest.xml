@@ -36,8 +36,7 @@
         <service android:name="com.amap.api.location.APSService" />
 
         <activity android:name=".basic.BasicMap2DActivity" />
-        <activity android:name=".location.LocationMarkerActivity" />
-        <activity android:name=".location.LocationBasicActivity"></activity>
+        <activity android:name=".location.LocationSourceActivity"></activity>
     </application>
 
 </manifest>
