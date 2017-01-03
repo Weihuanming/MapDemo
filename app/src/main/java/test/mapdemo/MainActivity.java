@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import test.mapdemo.basic.BasicMap2DActivity;
+import test.mapdemo.basic.BasicMap3DActivity;
 import test.mapdemo.location.LocationSourceActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Items[] items = {
         new Items("基本2D地图", BasicMap2DActivity.class),
+        new Items("基本3D地图", BasicMap3DActivity.class),
         new Items("基本定位", LocationSourceActivity.class)
     };
 
