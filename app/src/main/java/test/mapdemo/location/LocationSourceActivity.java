@@ -1,9 +1,7 @@
 package test.mapdemo.location;
 
-import android.Manifest;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -114,6 +112,7 @@ public class LocationSourceActivity extends AppCompatActivity implements Locatio
             } else {
                 String errText = "定位失败," + amapLocation.getErrorCode()+ ": " + amapLocation.getErrorInfo();
                 Log.e("AmapErr",errText);
+                Toast.makeText(this, "定位失败", Toast.LENGTH_SHORT).show();
             }
         }
     }

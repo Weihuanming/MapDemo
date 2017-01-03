@@ -2,6 +2,7 @@ package test.mapdemo;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,9 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION
-        }, 0x11);
+        checkPermission();
 
         list = (RecyclerView) findViewById(R.id.list);
         ListAdapter adapter = new ListAdapter();
@@ -83,5 +82,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void onItemClick(Items items) {
         startActivity(new Intent(this, items.activityClass));
+    }
+
+    private void checkPermission() {
+        PackageManager pm = getPackageManager();
+        boolean permission = (PackageManager.PERMISSION_GRANTED ==
+                pm.checkPermission("android.permission.ACCESS_FINE_LOCATION", "test.mapdemo"));
+        if (permission) {
+
+        }else {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 0x11);
+        }
     }
 }
